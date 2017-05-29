@@ -20,6 +20,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.teamcity.wallt.model.configuration.Configuration;
 import utils.teamcity.wallt.model.logger.Loggers;
@@ -36,6 +38,8 @@ import java.nio.file.Paths;
  */
 public final class ConfigurationModule extends AbstractModule {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger( Loggers.MAIN );
+	
     @Override
     protected void configure( ) {
         bind( IConfigurationController.class ).to( ConfigurationController.class ).in( Scopes.SINGLETON );
@@ -43,11 +47,14 @@ public final class ConfigurationModule extends AbstractModule {
 
     @Provides
     @Singleton
-    Configuration loadConfiguration( ) {
-        final Path configFilePath = Paths.get( "config.json" );
+    Configuration loadConfiguration( ) {    	
+        final Path configFilePath = ConfigurationController.getFilePath();
+        
         try ( FileReader reader = new FileReader( configFilePath.toFile( ) ) ) {
             final Gson gson = new Gson( );
-            return gson.fromJson( reader, Configuration.class );
+            Configuration conf = gson.fromJson( reader, Configuration.class );
+            LOGGER.info("Configuration item 0 name: " + conf.getSavedBuildTypes().get(0).getName() + " branch: " + conf.getSavedBuildTypes().get(0).getBranch() + " aliasname: " + conf.getSavedBuildTypes().get(0).getAliasName());
+            return conf;
         } catch ( IOException ignored ) {
             LoggerFactory.getLogger( Loggers.MAIN ).warn( "No configuration file found: starting with empty configuration" );
             return new Configuration( );

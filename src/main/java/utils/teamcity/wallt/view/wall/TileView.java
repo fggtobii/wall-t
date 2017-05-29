@@ -89,7 +89,7 @@ final class TileView extends StackPane {
         tileContent.setAlignment( CENTER_LEFT );
 
         final Label tileTitle = new Label( );
-        tileTitle.setFont( UIUtils.font( 50, FontWeight.BOLD ) );
+        tileTitle.setFont( UIUtils.font( 30, FontWeight.BOLD ) );
         tileTitle.setTextFill( Color.WHITE );
         tileTitle.setPadding( new Insets( 5 ) );
         tileTitle.setWrapText( true );

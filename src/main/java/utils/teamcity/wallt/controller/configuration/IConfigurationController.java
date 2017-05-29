@@ -23,5 +23,7 @@ package utils.teamcity.wallt.controller.configuration;
 public interface IConfigurationController {
 
     void saveConfiguration( );
+    
+    void saveConfiguration(String fileName );
 
 }

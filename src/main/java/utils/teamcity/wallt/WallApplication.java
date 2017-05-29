@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import utils.teamcity.wallt.controller.api.ApiModule;
 import utils.teamcity.wallt.controller.api.ApiRequestModule;
 import utils.teamcity.wallt.controller.api.IApiMonitoringService;
+import utils.teamcity.wallt.controller.configuration.ConfigurationController;
 import utils.teamcity.wallt.controller.configuration.ConfigurationModule;
 import utils.teamcity.wallt.model.build.BuildDataModule;
 import utils.teamcity.wallt.model.event.SceneEvent;
@@ -43,6 +44,8 @@ import utils.teamcity.wallt.view.configuration.ConfigurationViewModule;
 import utils.teamcity.wallt.view.wall.WallScene;
 import utils.teamcity.wallt.view.wall.WallViewModule;
 
+import java.nio.file.Paths;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -64,7 +67,9 @@ public final class WallApplication extends Application {
     private final IApiMonitoringService _apiMonitoringService;
     private final EventBus _eventBus;
 
-    private Stage _primaryStage;
+       
+    private static boolean _doRunAppAutomatically = false; 
+    private static Stage _primaryStage;
 
     public WallApplication( ) {
         LOGGER.info( "Starting ..." );
@@ -76,7 +81,29 @@ public final class WallApplication extends Application {
     }
 
     public static void main( final String[] args ) {
+    	// Parse before standard Java FX parse scheme in order to avoid problems with injection framework
+    	parseCommandlineArgs(args);
         Application.launch( WallApplication.class, args );
+    }
+    
+    private static void parseCommandlineArgs(final String[] args) {
+    	for (int i=0; i < args.length; ++i) {
+    		if ("--help".equals(args[i])) {
+    			System.out.println("===================================================================");
+    			System.out.println("WallApplication Command Line Options");
+    			System.out.println("--help : print help");
+    			System.out.println("--config <custom_config_file>.json : runs the application with the custom_config_file.json. Default configuration is config.json");
+    			System.out.println("--auto : runs the application with the config.json and connects to the server and switches to wall view automatically");
+    			System.out.println("===================================================================");
+    			System.exit(0);
+    		} else if ("--config".equals(args[i])) {
+    			i++;
+    			// Expecting config file to run
+    			ConfigurationController.setFilePath(Paths.get(args[i]));  			
+    		} else if ("--auto".equals(args[i])) {
+    			_doRunAppAutomatically = true;
+    		}
+    	}
     }
 
     public static List<Module> modules( ) {
@@ -96,13 +123,19 @@ public final class WallApplication extends Application {
     public void init( ) throws Exception {
         _eventBus.register( this );
         super.init( );
+        
+		// Import auto settings form command line
+		if (_doRunAppAutomatically) { 
+			ConfigurationController.setDoAutoServerConnect(true);
+			ConfigurationController.setDoAutoSwitchToWall(true);
+		}
     }
 
     @Override
     public void start( final Stage primaryStage ) throws Exception {
         _primaryStage = primaryStage;
-
-        primaryStage.setTitle( "Wall-T - Teamcity Radiator" );
+        
+        primaryStage.setTitle( "Wall-T - Teamcity Radiator - " + ConfigurationController.getFilePath() );
         primaryStage.getIcons( ).addAll( UIUtils.createImage( "icons/icon.png" ) );
 
         primaryStage.setMinWidth( MIN_WIDTH );
@@ -115,6 +148,11 @@ public final class WallApplication extends Application {
         primaryStage.show( );
 
         _eventBus.post( new SceneEvent( ConfigurationScene.class ) );
+    }
+    
+    public static void setTitle()
+    {
+    	_primaryStage.setTitle( "Wall-T - Teamcity Radiator - " + ConfigurationController.getFilePath() );
     }
 
     @Override

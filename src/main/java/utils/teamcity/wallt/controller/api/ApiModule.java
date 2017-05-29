@@ -77,16 +77,16 @@ public final class ApiModule extends AbstractModule {
     public Map<ApiVersion, Function<BuildType, BuildTypeData>> buildTypeByApiVersion( ) {
         return ImmutableMap.of(
                 ApiVersion.API_6_0,
-                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ) ),
+                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ), btype.getBranch( ) ),
 
                 ApiVersion.API_7_0,
-                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ) ),
+                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ), btype.getBranch( ) ),
 
                 ApiVersion.API_8_0,
-                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ) ),
+                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ), btype.getBranch( ) ),
 
                 ApiVersion.API_8_1,
-                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ) )
+                btype -> new BuildTypeData( btype.getId( ), btype.getName( ), btype.getProjectId( ), btype.getProjectName( ), btype.getBranch( ) )
         );
     }
 

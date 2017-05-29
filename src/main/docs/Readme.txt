@@ -22,3 +22,21 @@ See the project page on internet at: https://code.google.com/p/wall-t/
 
 Developed by Cedric Longo. https://plus.google.com/+CédricLongo
 Released under the terms of the GNU GENERAL PUBLIC LICENSE V3.
+
+==== Modifications ====
+
+====
+
+Modified by Fredrik Grönberg (2017).
+Modification is available here: https://github.com/fggtobii/wall-t.git
+
+launch application with "java -jar bin/Wall-T.jar [Options]"
+
+WallApplication Command Line Options
+--help : print help
+--config <custom_config_file>.json : runs the application with the custom_config_file.json. Default configuration is config.json
+--auto : runs the application with the config.json and connects to the server and switches to wall view automatically
+
+branches can now be specified in the config file and edited in the GUI
+
+====

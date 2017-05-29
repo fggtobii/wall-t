@@ -40,16 +40,18 @@ public final class BuildTypeData {
     private final String _name;
     private final String _projectId;
     private final String _projectName;
+    private String _branch;
 
     private String _aliasName;
 
     private boolean _queued;
 
-    public BuildTypeData( final String id, final String name, final String projectId, final String projectName ) {
+    public BuildTypeData( final String id, final String name, final String projectId, final String projectName, final String branch ) {
         _id = id;
         _name = name;
         _projectId = projectId;
         _projectName = projectName;
+        _branch = branch;
     }
 
     public String getId( ) {
@@ -63,6 +65,10 @@ public final class BuildTypeData {
     public String getProjectName( ) {
         return _projectName;
     }
+    
+    public String getBranch( ) {
+        return _branch;
+    }    
 
     public String getProjectId( ) {
         return _projectId;
@@ -74,6 +80,10 @@ public final class BuildTypeData {
 
     public void setAliasName( final String aliasName ) {
         _aliasName = aliasName;
+    }
+    
+    public void setBranch( final String branch ) {
+        _branch = branch;
     }
 
     public boolean hasRunningBuild( ) {

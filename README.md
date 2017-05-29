@@ -92,3 +92,20 @@ Application currently supports TeamCity API version from 6 to 8.1 (which are all
 ## Downloads
 Go to the [Download Page](https://github.com/u2032/wall-t/releases/) 
 
+## Modifications
+
+###
+
+Modified by Fredrik Grönberg (2017).
+Modification is available here: https://github.com/fggtobii/wall-t.git
+
+launch application with "java -jar bin\Wall-T.jar [Options]"
+
+WallApplication Command Line Options
+--help : print help
+--config <custom_config_file>.json : runs the application with the custom_config_file.json. Default configuration is config.json
+--auto : runs the application with the config.json and connects to the server and switches to wall view automatically
+
+branches can now be specified in the config file and edited in the GUI
+
+

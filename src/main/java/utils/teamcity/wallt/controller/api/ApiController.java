@@ -209,7 +209,10 @@ final class ApiController implements IApiController {
         final SettableFuture<Void> ackFuture = SettableFuture.create( );
 
         runInWorkerThread( ( ) -> {
-            final ListenableFuture<BuildList> buildListFuture = _apiRequestController.sendRequest( getApiVersion( ), "builds/?locator=buildType:" + buildType.getId( ) + ",running:any,count:" + MAX_BUILDS_TO_CONSIDER, BuildList.class );
+        	String branchSpec = buildType.getBranch();
+        	if ( branchSpec == null )
+        		branchSpec = "default:yes";
+            final ListenableFuture<BuildList> buildListFuture = _apiRequestController.sendRequest( getApiVersion( ), "builds/?locator=buildType:" + buildType.getId( ) + ",running:any,count:" + MAX_BUILDS_TO_CONSIDER + ",branch:" + branchSpec, BuildList.class );
             addCallback( buildListFuture, new FutureCallback<BuildList>( ) {
                 @Override
                 public void onSuccess( final BuildList result ) {

@@ -111,14 +111,23 @@ final class ConfigurationView extends BorderPane {
         VBox.setVgrow( projectList, Priority.SOMETIMES );
         content.getChildren( ).addAll( projectListLabel, projectList );
 
-
+        final Button saveConfigButton = new Button( "Save config" );
+        saveConfigButton.setOnAction( ( event ) -> _model.saveConfig( ) );
+        content.getChildren( ).add( saveConfigButton );
+        
+        final Button saveConfigAsButton = new Button( "Save config as" );
+        saveConfigAsButton.setOnAction( ( event ) -> _model.saveConfigAs( ) );
+        content.getChildren( ).add( saveConfigAsButton );
+        
         final Button swithToWallButton = new Button( "Switch to wall" );
         swithToWallButton.setOnAction( ( event ) -> _model.requestSwithToWallScene( ) );
-        content.getChildren( ).add( swithToWallButton );
+        content.getChildren( ).add( swithToWallButton );               
 
         buildTypesList.disableProperty( ).bind( _model.loadingFailureProperty( ) );
         projectList.disableProperty( ).bind( _model.loadingFailureProperty( ) );
         swithToWallButton.disableProperty( ).bind( _model.loadingFailureProperty( ) );
+        saveConfigButton.disableProperty( ).bind( _model.loadingFailureProperty( ) );    
+        saveConfigAsButton.disableProperty( ).bind( _model.loadingFailureProperty( ) );
 
         final ScrollPane scrollPane = new ScrollPane( content );
         scrollPane.setFitToWidth( true );
@@ -420,8 +429,20 @@ final class ConfigurationView extends BorderPane {
                     buildTypeData.setAliasName( event.getNewValue( ) );
                 }
         );
+        
+        final TableColumn<BuildTypeViewModel, String> branchColumns = new TableColumn<>( "Branch" );
+        branchColumns.setSortable( false );
+        branchColumns.setEditable( true );
+        branchColumns.setCellValueFactory( param -> param.getValue( ).branchProperty( ) );
+        branchColumns.setCellFactory( TextFieldTableCell.forTableColumn( ) );
+        branchColumns.setOnEditCommit(
+                event -> {
+                    final BuildTypeViewModel buildTypeData = event.getTableView( ).getItems( ).get( event.getTablePosition( ).getRow( ) );
+                    buildTypeData.setBranch( event.getNewValue( ) );
+                }
+        );
 
-        tableview.getColumns( ).addAll( selectedColumn, moveColumn, idColumn, projectColumn, nameColumn, aliasColumns );
+        tableview.getColumns( ).addAll( selectedColumn, moveColumn, idColumn, projectColumn, nameColumn, aliasColumns, branchColumns );
         return tableview;
     }
 

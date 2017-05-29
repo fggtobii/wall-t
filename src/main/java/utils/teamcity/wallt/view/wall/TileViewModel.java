@@ -74,7 +74,21 @@ final class TileViewModel {
             return;
 
         Platform.runLater( ( ) -> {
-            _displayedName.set( Strings.isNullOrEmpty( data.getAliasName( ) ) ? data.getName( ) : data.getAliasName( ) );
+        	String branchInfo = data.getBranch();
+        	if (branchInfo == null)
+        		branchInfo = "default";
+        	else if (branchInfo.equals("default:yes"))
+        		branchInfo = "default";
+        	else if (branchInfo.equals("default:no"))
+        		branchInfo = "all";
+        	else if (branchInfo.contains(":"))
+        	{
+        		String[] branchInfoParts = branchInfo.split(":");
+        		if (branchInfoParts[0].equals("name"))
+        			branchInfo = branchInfoParts[1];
+        	}
+
+            _displayedName.set( Strings.isNullOrEmpty( data.getAliasName( ) ) ? data.getName( ) + " @ " + branchInfo : data.getAliasName( ) + " @ " + branchInfo );
             _running.setValue( data.hasRunningBuild( ) );
             _queued.setValue( data.isQueued( ) );
 

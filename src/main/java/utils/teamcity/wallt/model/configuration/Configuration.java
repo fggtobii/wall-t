@@ -70,6 +70,10 @@ public final class Configuration {
     @SerializedName("monitored_projects")
     private List<SavedProjectData> _savedProjects = Lists.newArrayList( );
 
+    //NOTE(teld): Flags in Configuration to do automatic server connect and switch to wall
+    public boolean _doAutoServerConnect = false;
+    public boolean _doAutoSwitchToWall = false;
+    
     public String getServerUrl( ) {
         return _serverUrl;
     }

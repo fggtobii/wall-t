@@ -34,6 +34,8 @@ final class BuildTypeViewModel implements IPositionable {
     private final StringProperty _projectName = new SimpleStringProperty( );
     private final StringProperty _name = new SimpleStringProperty( );
     private final StringProperty _aliasName = new SimpleStringProperty( );
+    private final StringProperty _branch = new SimpleStringProperty( );
+    
     private final IntegerProperty _position = new SimpleIntegerProperty( );
     private final BooleanProperty _selected = new SimpleBooleanProperty( );
 
@@ -50,6 +52,12 @@ final class BuildTypeViewModel implements IPositionable {
         _aliasName.setValue( data.getAliasName( ) );
         _aliasName.addListener( ( o, oldValue, newValue ) -> {
             data.setAliasName( newValue );
+            eventBus.post( data );
+        } );
+        
+        _branch.setValue( data.getBranch( ) );
+        _branch.addListener( ( o, oldValue, newValue ) -> {
+            data.setBranch( newValue );
             eventBus.post( data );
         } );
 
@@ -98,7 +106,7 @@ final class BuildTypeViewModel implements IPositionable {
 
     String getAliasName( ) {
         return _aliasName.get( );
-    }
+    }       
 
     StringProperty aliasNameProperty( ) {
         return _aliasName;
@@ -106,6 +114,18 @@ final class BuildTypeViewModel implements IPositionable {
 
     void setAliasName( final String aliasName ) {
         _aliasName.set( aliasName );
+    }
+    
+    String getBranch( ) {
+        return _branch.get( );
+    }
+    
+    StringProperty branchProperty( ) {
+        return _branch;
+    }
+    
+    void setBranch( final String branch ) {
+        _branch.set( branch );
     }
 
     boolean isSelected( ) {

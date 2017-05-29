@@ -21,14 +21,20 @@ import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.io.File;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.*;
+import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import utils.teamcity.wallt.WallApplication;
 import utils.teamcity.wallt.controller.api.ApiVersion;
 import utils.teamcity.wallt.controller.api.IApiController;
+import utils.teamcity.wallt.controller.configuration.ConfigurationController;
 import utils.teamcity.wallt.controller.configuration.IConfigurationController;
 import utils.teamcity.wallt.model.build.IBuildTypeManager;
 import utils.teamcity.wallt.model.build.IProjectManager;
@@ -150,6 +156,11 @@ final class ConfigurationViewModel {
 
         updateBuildTypeList( buildManager );
         updateProjectList( projectManager );
+        
+        
+        //NOTE(teld): Connect automatically to server...
+        if(_configuration._doAutoServerConnect)
+        	requestLoadingBuilds( );
     }
 
     void invalidateConnectInformation( ) {
@@ -239,11 +250,16 @@ final class ConfigurationViewModel {
         return new FutureCallback<Void>( ) {
             @Override
             public void onSuccess( final Void result ) {
-                _configurationController.saveConfiguration( );
+//                _configurationController.saveConfiguration( );
                 Platform.runLater( ( ) -> {
                     _loadingFailure.setValue( false );
                     _loadingInformation.setValue( null );
                     _loading.setValue( false );
+                    
+                    // NOTE(teld): Do auto switch to wall
+                    if(_configuration._doAutoSwitchToWall) {
+                    	requestSwithToWallScene();
+                    }
                 } );
             }
 
@@ -291,9 +307,22 @@ final class ConfigurationViewModel {
     }
 
     public void requestSwithToWallScene( ) {
-        _configurationController.saveConfiguration( );
+//        _configurationController.saveConfiguration( );
         _eventBus.post( _configuration );
         _eventBus.post( new SceneEvent( WallScene.class ) );
+    }
+    
+    public void saveConfig( ) {
+      _configurationController.saveConfiguration( ConfigurationController.getFilePath().toString() );
+    }
+    
+    public void saveConfigAs()
+    {
+    	final FileChooser saveAsChooser = new FileChooser();
+    	File saveFile = saveAsChooser.showSaveDialog(new Stage());
+    	_configurationController.saveConfiguration( saveFile.getAbsolutePath() );    
+    	ConfigurationController.setFilePath(saveFile.toPath());
+    	WallApplication.setTitle();
     }
 
     public ApiVersion getApiVersion( ) {

@@ -34,7 +34,7 @@ public final class ProjectData {
 
     private final String _id;
     private final String _name;
-    private final Optional<String> _parentId;
+    private final Optional<String> _parentId;    
 
     private final List<BuildTypeData> _buildTypes = Lists.newArrayList( );
     private String _aliasName;
@@ -51,7 +51,7 @@ public final class ProjectData {
 
     public String getName( ) {
         return _name;
-    }
+    }   
 
     public Optional<String> getParentId( ) {
         return _parentId;

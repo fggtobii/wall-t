@@ -52,24 +52,60 @@ public final class ConfigurationController implements IConfigurationController {
     private final Configuration _configuration;
     private final IBuildTypeManager _buildManager;
     private final IProjectManager _projectManager;
+    
+    private static Path filePath = Paths.get("config.json");
+    private static boolean _doAutoServerConnect = false;
+    private static boolean _doAutoSwitchToWall = false;
 
     @Inject
     public ConfigurationController( final Configuration configuration, final IBuildTypeManager buildManager, final IProjectManager projectManager ) {
         _configuration = configuration;
         _buildManager = buildManager;
         _projectManager = projectManager;
+        
+        _configuration._doAutoServerConnect = _doAutoServerConnect;
+        _configuration._doAutoSwitchToWall = _doAutoSwitchToWall;
+    }
+    
+    public static Path getFilePath() {
+    	return filePath;
+    }
+    
+    public static void setFilePath(Path path) {
+    	filePath = path;
+    }
+    
+    public static void setDoAutoServerConnect(boolean flag) {
+    	_doAutoServerConnect = flag;
+    }
+    
+    public static void setDoAutoSwitchToWall(boolean flag) {
+    	_doAutoSwitchToWall = flag;
+    }
+    
+    public void setAutoServerConnectConfiguration(boolean flag) {
+    	_configuration._doAutoServerConnect = flag;
+    }
+    
+    public void setAutoSwitchToWallConfiguration(boolean flag) {
+    	_configuration._doAutoSwitchToWall = flag;
     }
 
     @Override
     public void saveConfiguration( ) {
+    	saveConfiguration("config.json");
+    }
+    
+    @Override
+    public void saveConfiguration( String filename ) {
 
         updateSavedBuildTypes( );
         updateSavedProjects( );
 
         final Gson gson = new GsonBuilder( ).setPrettyPrinting( ).create( );
-        final Path configFilePath = Paths.get( "config.json" );
+        final Path configFilePath = Paths.get( filename );
         final Path configTmpFilePath = Paths.get( "config.json.tmp" );
-        try ( FileWriter writer = new FileWriter( configTmpFilePath.toFile( ) ) ) {
+        try ( FileWriter writer = new FileWriter( configTmpFilePath.toFile( ) ) ) {        	
             writer.write( gson.toJson( _configuration ) );
             writer.flush( );
         } catch ( IOException e ) {
@@ -91,7 +127,7 @@ public final class ConfigurationController implements IConfigurationController {
         final Ordering<BuildTypeData> ordering = Ordering.from( Comparator.comparingInt( _buildManager::getPosition ) );
 
         final List<SavedBuildTypeData> buildToSaved = ordering.sortedCopy( monitoredBuildTypes ).stream( )
-                .map( data -> new SavedBuildTypeData( data.getId( ), data.getName( ), data.getProjectId( ), data.getProjectName( ), data.getAliasName( ) ) )
+                .map( data -> new SavedBuildTypeData( data.getId( ), data.getName( ), data.getProjectId( ), data.getProjectName( ), data.getAliasName( ), data.getBranch() ) )
                 .collect( Collectors.toList( ) );
 
         _configuration.setSavedBuilds( buildToSaved );
