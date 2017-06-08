@@ -36,6 +36,8 @@ WallApplication Command Line Options
 --help : print help
 --config <custom_config_file>.json : runs the application with the custom_config_file.json. Default configuration is config.json
 --auto : runs the application with the config.json and connects to the server and switches to wall view automatically
+--maximized : starts the application with a maximized application window
+--screen : Choose screen index (0 is primary and counting up)
 
 branches can now be specified in the config file and edited in the GUI
 

@@ -23,6 +23,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
+import com.sun.glass.ui.Screen;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -58,7 +60,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public final class WallApplication extends Application {
 
     public static final int MIN_WIDTH = 1024;
-    public static final int MIN_HEIGHT = 800;
+    public static final int MIN_HEIGHT = 600;
     public static final Logger LOGGER = LoggerFactory.getLogger( Loggers.MAIN );
 
     private final Injector _injector;
@@ -69,7 +71,9 @@ public final class WallApplication extends Application {
 
        
     private static boolean _doRunAppAutomatically = false; 
+    private static boolean _startMaximized = false;
     private static Stage _primaryStage;
+    private static int _screenIndex = 0;
 
     public WallApplication( ) {
         LOGGER.info( "Starting ..." );
@@ -94,6 +98,8 @@ public final class WallApplication extends Application {
     			System.out.println("--help : print help");
     			System.out.println("--config <custom_config_file>.json : runs the application with the custom_config_file.json. Default configuration is config.json");
     			System.out.println("--auto : runs the application with the config.json and connects to the server and switches to wall view automatically");
+    			System.out.println("--maximized : starts the application with a maximized application window");
+    			System.out.println("--screen : Choose screen index (0 is primary and counting up)");
     			System.out.println("===================================================================");
     			System.exit(0);
     		} else if ("--config".equals(args[i])) {
@@ -102,6 +108,12 @@ public final class WallApplication extends Application {
     			ConfigurationController.setFilePath(Paths.get(args[i]));  			
     		} else if ("--auto".equals(args[i])) {
     			_doRunAppAutomatically = true;
+    		} else if ("--maximized".equals(args[i])) {
+    			_startMaximized = true;
+    		}  else if ("--screen".equals(args[i])) {
+    			_startMaximized = true;
+    			i++;
+    			_screenIndex = Integer.parseInt(args[i]);
     		}
     	}
     }
@@ -142,6 +154,12 @@ public final class WallApplication extends Application {
         primaryStage.setMinHeight( MIN_HEIGHT );
         primaryStage.setWidth( MIN_WIDTH );
         primaryStage.setHeight( MIN_HEIGHT );
+        primaryStage.setMaximized(_startMaximized);
+        Screen secondaryScreen = Screen.getScreens().get(_screenIndex);
+        int boundsX = secondaryScreen.getX();
+        int boundsY = secondaryScreen.getY();
+        primaryStage.setX(boundsX+100);
+        primaryStage.setY(boundsY+100);
 
         _apiMonitoringService.start( );
 
