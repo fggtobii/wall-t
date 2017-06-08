@@ -111,7 +111,6 @@ public final class WallApplication extends Application {
     		} else if ("--maximized".equals(args[i])) {
     			_startMaximized = true;
     		}  else if ("--screen".equals(args[i])) {
-    			_startMaximized = true;
     			i++;
     			_screenIndex = Integer.parseInt(args[i]);
     		}
